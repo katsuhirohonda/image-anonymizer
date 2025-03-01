@@ -60,6 +60,7 @@ struct Feature {
 pub fn detect_text_with_api(image_path: &Path) -> Result<Vec<TextAnnotation>> {
     let api_key = env::var("GCP_API_KEY").context("GCP_API_KEY environment variable not set")?;
 
+    info!("image_path: {}", image_path.display());
     let image_data = std::fs::read(image_path).context("Failed to read image file")?;
     let base64_image = general_purpose::STANDARD.encode(&image_data);
 
@@ -69,7 +70,7 @@ pub fn detect_text_with_api(image_path: &Path) -> Result<Vec<TextAnnotation>> {
                 content: base64_image,
             },
             features: vec![Feature {
-                feature_type: "TEXT_DETECTION".to_string(),
+                feature_type: "DOCUMENT_TEXT_DETECTION".to_string(),
                 max_results: 100,
             }],
         }],
@@ -88,6 +89,8 @@ pub fn detect_text_with_api(image_path: &Path) -> Result<Vec<TextAnnotation>> {
     let response_body: TextDetectionResponse = response
         .json()
         .context("Failed to parse Google Cloud Vision API response")?;
+
+    info!("Response: {:?}", response_body);
 
     if response_body.responses.is_empty() {
         error!("No responses from Google Cloud Vision API");
