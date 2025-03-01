@@ -56,10 +56,18 @@ pub fn analyze_text_sensitivity(text: &str) -> Result<bool> {
     info!("Analyzing text sensitivity with Gemini: {}", text);
 
     let prompt = format!(
-        "Analyze the following text and determine if it contains sensitive information such as: \
-        API keys, credentials, email addresses, phone numbers, credit card numbers, \
-        personal names, or any other confidential data. \
-        Do not explain. Respond with only 'true' if it contains sensitive information, or 'false' if it doesn't.\n\n\
+        "Analyze the following text and determine if it contains ACTUAL sensitive information rather than just labels or UI elements. \
+        Respond with only 'true' if it contains real sensitive information, or 'false' if it doesn't.\n\n\
+        Examples of what IS sensitive:\n\
+        - Actual API keys like 'AIzaSyB3X7gtreHx9FGpA_Y3xUzT3gBELEhH7iM'\n\
+        - Real email addresses like 'john.doe@example.com'\n\
+        - Actual phone numbers like '+1-555-123-4567'\n\
+        - Real credit card numbers, personal names, addresses, etc.\n\n\
+        Examples of what is NOT sensitive:\n\
+        - Labels like 'API Key', 'Email', 'Credentials', 'Create', 'Password'\n\
+        - Button text like 'Submit', 'Login', 'Dismiss', 'View'\n\
+        - Generic terms like 'Username' or 'Authentication'\n\n\
+        Only mark as 'true' if it appears to be an actual sensitive value, not a UI element or label describing a value.\n\n\
         Text to analyze: \"{}\"",
         text
     );
