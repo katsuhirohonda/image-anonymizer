@@ -91,10 +91,8 @@ pub fn detect_text_with_api(image_path: &Path) -> Result<Vec<TextAnnotation>> {
         .send()
         .context("Failed to send request to Google Cloud Vision API")?;
 
-    // レスポンスをテキストとして取得して詳細なデバッグ情報を記録
     let response_text = response.text().context("Failed to get response text")?;
 
-    // レスポンスのサイズが大きい場合は一部だけログに記録
     if response_text.len() > 1000 {
         debug!(
             "Response text (first 1000 chars): {}",
@@ -105,7 +103,6 @@ pub fn detect_text_with_api(image_path: &Path) -> Result<Vec<TextAnnotation>> {
         debug!("Response text: {}", &response_text);
     }
 
-    // JSONをパースして構造体に変換
     let response_body: TextDetectionResponse = serde_json::from_str(&response_text)
         .context("Failed to parse Google Cloud Vision API response")?;
 
