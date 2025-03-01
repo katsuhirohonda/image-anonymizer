@@ -6,7 +6,6 @@ A command-line tool to detect and mask sensitive content in images.
 
 - Detects and masks sensitive content in images:
   - Text detection via OCR
-  - Facial detection and anonymization
 - Identifies sensitive textual information like:
   - API keys
   - Email addresses
