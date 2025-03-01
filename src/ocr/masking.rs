@@ -32,7 +32,7 @@ impl Default for SensitiveTextCriteria {
 
 fn is_sensitive_text(
     text: &str,
-    _criteria: &SensitiveTextCriteria,
+    criteria: &SensitiveTextCriteria,
     additional_texts: &[String],
 ) -> bool {
     // First check additional_texts for direct matches (this is fast and doesn't require API calls)
@@ -46,28 +46,40 @@ fn is_sensitive_text(
         return false;
     }
 
-    // Call Gemini API to analyze the text
-    match analyze_text_sensitivity(text) {
-        Ok(is_sensitive) => {
-            if is_sensitive {
-                info!("Gemini identified sensitive text: {}", text);
-                true
-            } else {
-                false
-            }
-        }
-        Err(err) => {
-            warn!(
-                "Error calling Gemini API, defaulting to non-sensitive: {}",
-                err
-            );
-            // If API fails, fall back to safety and consider it sensitive if it looks like
-            // an email, phone number, or contains numeric sequences that might be cards/IDs
-            text.contains('@')
-                || text.contains('-')
-                || (text.chars().filter(|c| c.is_numeric()).count() > 8)
-        }
+    if criteria.api_keys
+        && text.len() > 20
+        && text
+            .chars()
+            .all(|c| c.is_alphanumeric() || c == '_' || c == '.' || c == '@')
+    {
+        info!("Detected potential API key: {}", text);
+        return true;
     }
+
+    return false;
+
+    //// Call Gemini API to analyze the text
+    //match analyze_text_sensitivity(text) {
+    //    Ok(is_sensitive) => {
+    //        if is_sensitive {
+    //            info!("Gemini identified sensitive text: {}", text);
+    //            true
+    //        } else {
+    //            false
+    //        }
+    //    }
+    //    Err(err) => {
+    //        warn!(
+    //            "Error calling Gemini API, defaulting to non-sensitive: {}",
+    //            err
+    //        );
+    //        // If API fails, fall back to safety and consider it sensitive if it looks like
+    //        // an email, phone number, or contains numeric sequences that might be cards/IDs
+    //        text.contains('@')
+    //            || text.contains('-')
+    //            || (text.chars().filter(|c| c.is_numeric()).count() > 8)
+    //    }
+    //}
 }
 
 pub fn mask_text(
