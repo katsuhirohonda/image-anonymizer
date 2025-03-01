@@ -31,7 +31,9 @@ pub struct BoundingPoly {
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Vertex {
+    #[serde(default)]
     pub x: i32,
+    #[serde(default)]
     pub y: i32,
 }
 
@@ -60,8 +62,8 @@ struct Feature {
 
 pub fn detect_text_with_api(image_path: &Path) -> Result<Vec<TextAnnotation>> {
     let api_key = env::var("GCP_API_KEY").context("GCP_API_KEY environment variable not set")?;
-
     info!("image_path: {}", image_path.display());
+
     let image_data = std::fs::read(image_path).context("Failed to read image file")?;
     let base64_image = general_purpose::STANDARD.encode(&image_data);
 
@@ -87,11 +89,23 @@ pub fn detect_text_with_api(image_path: &Path) -> Result<Vec<TextAnnotation>> {
         .send()
         .context("Failed to send request to Google Cloud Vision API")?;
 
-    let response_body: TextDetectionResponse = response
-        .json()
-        .context("Failed to parse Google Cloud Vision API response")?;
+    // レスポンスをテキストとして取得して詳細なデバッグ情報を記録
+    let response_text = response.text().context("Failed to get response text")?;
 
-    info!("Response: {:?}", response_body);
+    // レスポンスのサイズが大きい場合は一部だけログに記録
+    if response_text.len() > 1000 {
+        info!(
+            "Response text (first 1000 chars): {}",
+            &response_text[..1000]
+        );
+        info!("Response text length: {}", response_text.len());
+    } else {
+        info!("Response text: {}", &response_text);
+    }
+
+    // JSONをパースして構造体に変換
+    let response_body: TextDetectionResponse = serde_json::from_str(&response_text)
+        .context("Failed to parse Google Cloud Vision API response")?;
 
     if response_body.responses.is_empty() {
         error!("No responses from Google Cloud Vision API");
@@ -100,6 +114,13 @@ pub fn detect_text_with_api(image_path: &Path) -> Result<Vec<TextAnnotation>> {
 
     let annotations = response_body.responses[0].text_annotations.clone();
     info!("Detected {} text annotations", annotations.len());
+
+    if !annotations.is_empty() {
+        info!(
+            "First annotation description: {}",
+            annotations[0].description
+        );
+    }
 
     Ok(annotations)
 }
