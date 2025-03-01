@@ -34,7 +34,15 @@ struct SensitiveTextsResponse {
 }
 
 fn main() -> Result<()> {
-    tracing_subscriber::fmt::init();
+    tracing_subscriber::fmt()
+        .with_ansi(true)
+        .with_target(true)
+        .with_thread_ids(true)
+        .with_line_number(true)
+        .with_file(false)
+        .with_level(true)
+        .try_init()
+        .expect("Failed to initialize logger");
 
     let args = Args::parse();
 

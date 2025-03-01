@@ -38,6 +38,7 @@ fn is_sensitive_text(
     }
 
     // TODO: add more criteria
+    info!("Text: {}", text);
 
     false
 }
