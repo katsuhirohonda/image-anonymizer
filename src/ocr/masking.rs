@@ -1,6 +1,7 @@
 use crate::ocr::detection::BoundingPoly;
 use anyhow::Result;
 use image::{DynamicImage, GenericImage, Rgba};
+use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 use tracing::{info, warn};
 
@@ -87,7 +88,6 @@ pub fn mask_text(
     let criteria = SensitiveTextCriteria::default();
 
     info!("Masking sensitive text in image");
-    let mut masked_count = 0;
 
     // skip first annotation because it's usually the whole image text
     // if there is only one annotation, process it
@@ -97,13 +97,20 @@ pub fn mask_text(
         annotations
     };
 
-    for annotation in annotations_to_process {
-        let is_sensitive = is_sensitive_text(&annotation.description, &criteria, additional_masks);
+    // check sensitivity in parallel and collect sensitive annotations
+    let sensitive_annotations: Vec<&TextAnnotation> = annotations_to_process
+        .par_iter() // parallel iteration
+        .filter(|&annotation| {
+            is_sensitive_text(&annotation.description, &criteria, additional_masks)
+        })
+        .collect();
 
-        if is_sensitive {
-            mask_annotation(image, annotation)?;
-            masked_count += 1;
-        }
+    let masked_count = sensitive_annotations.len();
+
+    // apply mask to sensitive annotations
+    // because it's writing to the image, we avoid parallelization and process sequentially
+    for annotation in sensitive_annotations {
+        mask_annotation(image, annotation)?;
     }
 
     info!("Masked {} sensitive text regions", masked_count);

@@ -737,6 +737,7 @@ dependencies = [
  "clap",
  "dotenv",
  "image",
+ "rayon",
  "reqwest",
  "serde",
  "serde_json",
