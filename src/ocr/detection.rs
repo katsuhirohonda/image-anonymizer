@@ -21,10 +21,12 @@ pub struct Response {
 #[derive(Debug, Deserialize, Clone)]
 pub struct TextAnnotation {
     pub description: String,
-    pub bounding_poly: BoundingPoly,
+    #[serde(default)]
+    #[serde(rename = "boundingPoly")]
+    pub bounding_poly: Option<BoundingPoly>,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Default)]
 pub struct BoundingPoly {
     pub vertices: Vec<Vertex>,
 }

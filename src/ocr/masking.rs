@@ -65,7 +65,11 @@ pub fn mask_text(
 }
 
 fn mask_annotation(image: &mut DynamicImage, annotation: &TextAnnotation) -> Result<()> {
-    let vertices = &annotation.bounding_poly.vertices;
+    let vertices = &annotation
+        .bounding_poly
+        .as_ref()
+        .unwrap_or_default()
+        .vertices;
 
     let min_x = vertices.iter().map(|v| v.x).min().unwrap_or(0).max(0) as u32;
     let min_y = vertices.iter().map(|v| v.y).min().unwrap_or(0).max(0) as u32;
