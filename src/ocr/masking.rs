@@ -56,30 +56,28 @@ fn is_sensitive_text(
         return true;
     }
 
-    return false;
-
-    //// Call Gemini API to analyze the text
-    //match analyze_text_sensitivity(text) {
-    //    Ok(is_sensitive) => {
-    //        if is_sensitive {
-    //            info!("Gemini identified sensitive text: {}", text);
-    //            true
-    //        } else {
-    //            false
-    //        }
-    //    }
-    //    Err(err) => {
-    //        warn!(
-    //            "Error calling Gemini API, defaulting to non-sensitive: {}",
-    //            err
-    //        );
-    //        // If API fails, fall back to safety and consider it sensitive if it looks like
-    //        // an email, phone number, or contains numeric sequences that might be cards/IDs
-    //        text.contains('@')
-    //            || text.contains('-')
-    //            || (text.chars().filter(|c| c.is_numeric()).count() > 8)
-    //    }
-    //}
+    // Call Gemini API to analyze the text
+    match analyze_text_sensitivity(text) {
+        Ok(is_sensitive) => {
+            if is_sensitive {
+                info!("Gemini identified sensitive text: {}", text);
+                true
+            } else {
+                false
+            }
+        }
+        Err(err) => {
+            warn!(
+                "Error calling Gemini API, defaulting to non-sensitive: {}",
+                err
+            );
+            // If API fails, fall back to safety and consider it sensitive if it looks like
+            // an email, phone number, or contains numeric sequences that might be cards/IDs
+            text.contains('@')
+                || text.contains('-')
+                || (text.chars().filter(|c| c.is_numeric()).count() > 8)
+        }
+    }
 }
 
 pub fn mask_text(

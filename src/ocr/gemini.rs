@@ -115,7 +115,12 @@ pub fn analyze_text_sensitivity(text: &str) -> Result<bool> {
         .map(|part| part.text.trim().to_lowercase())
         .unwrap_or_default();
 
-    info!("Gemini sensitivity analysis result: {}", result_text);
+    if result_text == "true" {
+        info!(
+            "Gemini sensitivity analysis result: {}, text: {}",
+            result_text, text
+        );
+    }
 
     match result_text.as_str() {
         "true" => Ok(true),
