@@ -1,3 +1,4 @@
+use crate::ocr::detection::BoundingPoly;
 use anyhow::Result;
 use image::{DynamicImage, GenericImage, Rgba};
 use serde::{Deserialize, Serialize};
@@ -65,10 +66,11 @@ pub fn mask_text(
 }
 
 fn mask_annotation(image: &mut DynamicImage, annotation: &TextAnnotation) -> Result<()> {
+    let empty_poly = BoundingPoly { vertices: vec![] };
     let vertices = &annotation
         .bounding_poly
         .as_ref()
-        .unwrap_or_default()
+        .unwrap_or(&empty_poly)
         .vertices;
 
     let min_x = vertices.iter().map(|v| v.x).min().unwrap_or(0).max(0) as u32;

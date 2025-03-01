@@ -7,8 +7,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use tracing::{error, info};
 
-use ocr::detect_text_with_api;
-use ocr::mask_text;
+use ocr::detection::detect_text_with_api;
+use ocr::masking::mask_text;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about = "A tool to mask sensitive content in images")]
