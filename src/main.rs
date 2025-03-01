@@ -55,7 +55,6 @@ fn main() -> Result<()> {
 
     let args = Args::parse();
 
-    // Check if required API keys are set
     if std::env::var("GCP_API_KEY").is_err() {
         error!("GCP_API_KEY environment variable is not set");
         anyhow::bail!("GCP_API_KEY environment variable is not set");
