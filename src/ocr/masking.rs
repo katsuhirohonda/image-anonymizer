@@ -41,7 +41,6 @@ fn is_sensitive_text(
         return true;
     }
 
-    // Skip very short text as they're unlikely to be sensitive
     if text.len() < 3 {
         return false;
     }
@@ -90,10 +89,15 @@ pub fn mask_text(
     info!("Masking sensitive text in image");
     let mut masked_count = 0;
 
-    for annotation in annotations {
-        // Using is_sensitive_text function requires async context
-        // For compatibility with existing code, we can use reqwest's blocking API in analyze_text_sensitivity
-        // Or refactor the entire codebase to use async Rust
+    // skip first annotation because it's usually the whole image text
+    // if there is only one annotation, process it
+    let annotations_to_process = if annotations.len() > 1 {
+        &annotations[1..]
+    } else {
+        annotations
+    };
+
+    for annotation in annotations_to_process {
         let is_sensitive = is_sensitive_text(&annotation.description, &criteria, additional_masks);
 
         if is_sensitive {
@@ -114,6 +118,11 @@ fn mask_annotation(image: &mut DynamicImage, annotation: &TextAnnotation) -> Res
         .unwrap_or(&empty_poly)
         .vertices;
 
+    if vertices.is_empty() {
+        info!("Skipping annotation with empty bounding polygon");
+        return Ok(());
+    }
+
     let min_x = vertices.iter().map(|v| v.x).min().unwrap_or(0).max(0) as u32;
     let min_y = vertices.iter().map(|v| v.y).min().unwrap_or(0).max(0) as u32;
     let max_x = vertices.iter().map(|v| v.x).max().unwrap_or(0).max(0) as u32;
@@ -123,6 +132,17 @@ fn mask_annotation(image: &mut DynamicImage, annotation: &TextAnnotation) -> Res
 
     let max_x = max_x.min(width - 1);
     let max_y = max_y.min(height - 1);
+
+    let box_width = max_x.saturating_sub(min_x);
+    let box_height = max_y.saturating_sub(min_y);
+
+    if box_width > width / 2 || box_height > height / 2 {
+        info!(
+            "Skipping oversized bounding box: {}x{}",
+            box_width, box_height
+        );
+        return Ok(());
+    }
 
     let black = Rgba([0, 0, 0, 128]);
 
