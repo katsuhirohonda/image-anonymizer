@@ -4,7 +4,7 @@ use reqwest::blocking::Client;
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::path::Path;
-use tracing::{error, info};
+use tracing::{debug, error};
 
 #[derive(Debug, Deserialize)]
 pub struct TextDetectionResponse {
@@ -64,7 +64,7 @@ struct Feature {
 
 pub fn detect_text_with_api(image_path: &Path) -> Result<Vec<TextAnnotation>> {
     let api_key = env::var("GCP_API_KEY").context("GCP_API_KEY environment variable not set")?;
-    info!("image_path: {}", image_path.display());
+    debug!("image_path: {}", image_path.display());
 
     let image_data = std::fs::read(image_path).context("Failed to read image file")?;
     let base64_image = general_purpose::STANDARD.encode(&image_data);
@@ -96,13 +96,13 @@ pub fn detect_text_with_api(image_path: &Path) -> Result<Vec<TextAnnotation>> {
 
     // レスポンスのサイズが大きい場合は一部だけログに記録
     if response_text.len() > 1000 {
-        info!(
+        debug!(
             "Response text (first 1000 chars): {}",
             &response_text[..1000]
         );
-        info!("Response text length: {}", response_text.len());
+        debug!("Response text length: {}", response_text.len());
     } else {
-        info!("Response text: {}", &response_text);
+        debug!("Response text: {}", &response_text);
     }
 
     // JSONをパースして構造体に変換
@@ -115,14 +115,7 @@ pub fn detect_text_with_api(image_path: &Path) -> Result<Vec<TextAnnotation>> {
     }
 
     let annotations = response_body.responses[0].text_annotations.clone();
-    info!("Detected {} text annotations", annotations.len());
-
-    if !annotations.is_empty() {
-        info!(
-            "First annotation description: {}",
-            annotations[0].description
-        );
-    }
+    debug!("Detected {} text annotations", annotations.len());
 
     Ok(annotations)
 }

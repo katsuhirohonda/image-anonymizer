@@ -3,7 +3,7 @@ use anyhow::Result;
 use image::{DynamicImage, GenericImage, Rgba};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
-use tracing::{info, warn};
+use tracing::{debug, error, info};
 
 use super::detection::TextAnnotation;
 use super::gemini::analyze_text_sensitivity;
@@ -38,7 +38,7 @@ fn is_sensitive_text(
 ) -> bool {
     // First check additional_texts for direct matches (this is fast and doesn't require API calls)
     if additional_texts.iter().any(|t| text.contains(t)) {
-        info!("Text matched additional mask pattern: {}", text);
+        debug!("Text matched additional mask pattern: {}", text);
         return true;
     }
 
@@ -52,7 +52,7 @@ fn is_sensitive_text(
             .chars()
             .all(|c| c.is_alphanumeric() || c == '_' || c == '.' || c == '@')
     {
-        info!("Detected potential API key: {}", text);
+        debug!("Detected potential API key: {}", text);
         return true;
     }
 
@@ -60,14 +60,14 @@ fn is_sensitive_text(
     match analyze_text_sensitivity(text) {
         Ok(is_sensitive) => {
             if is_sensitive {
-                info!("Gemini identified sensitive text: {}", text);
+                debug!("Gemini identified sensitive text: {}", text);
                 true
             } else {
                 false
             }
         }
         Err(err) => {
-            warn!(
+            error!(
                 "Error calling Gemini API, defaulting to non-sensitive: {}",
                 err
             );
@@ -126,7 +126,7 @@ fn mask_annotation(image: &mut DynamicImage, annotation: &TextAnnotation) -> Res
         .vertices;
 
     if vertices.is_empty() {
-        info!("Skipping annotation with empty bounding polygon");
+        debug!("Skipping annotation with empty bounding polygon");
         return Ok(());
     }
 
@@ -144,7 +144,7 @@ fn mask_annotation(image: &mut DynamicImage, annotation: &TextAnnotation) -> Res
     let box_height = max_y.saturating_sub(min_y);
 
     if box_width > width / 2 || box_height > height / 2 {
-        info!(
+        debug!(
             "Skipping oversized bounding box: {}x{}",
             box_width, box_height
         );

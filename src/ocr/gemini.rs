@@ -2,7 +2,7 @@ use anyhow::{Context, Result};
 use reqwest::blocking::Client;
 use serde::{Deserialize, Serialize};
 use std::env;
-use tracing::{error, info};
+use tracing::{debug, error};
 
 #[derive(Debug, Serialize)]
 struct GeminiRequest {
@@ -53,7 +53,7 @@ struct CandidatePart {
 pub fn analyze_text_sensitivity(text: &str) -> Result<bool> {
     let api_key = env::var("GCP_API_KEY").context("GCP_API_KEY environment variable not set")?;
 
-    info!("Analyzing text sensitivity with Gemini: {}", text);
+    debug!("Analyzing text sensitivity with Gemini: {}", text);
 
     let prompt = format!(
         "Analyze the following text and determine if it contains ACTUAL sensitive information rather than just labels or UI elements. \
@@ -127,7 +127,7 @@ pub fn analyze_text_sensitivity(text: &str) -> Result<bool> {
         .unwrap_or_default();
 
     if result_text == "true" {
-        info!(
+        debug!(
             "Gemini sensitivity analysis result: {}, text: {}",
             result_text, text
         );
@@ -137,7 +137,7 @@ pub fn analyze_text_sensitivity(text: &str) -> Result<bool> {
         "true" => Ok(true),
         "false" => Ok(false),
         _ => {
-            info!("Unexpected response from Gemini API: {}", result_text);
+            error!("Unexpected response from Gemini API: {}", result_text);
             // Default to treating as sensitive if we get an unexpected response
             Ok(true)
         }

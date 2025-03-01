@@ -5,7 +5,7 @@ use clap::Parser;
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
-use tracing::{error, info};
+use tracing::{debug, error, info};
 
 use ocr::detection::detect_text_with_api;
 use ocr::masking::mask_text;
@@ -44,6 +44,7 @@ fn main() -> Result<()> {
     }
 
     tracing_subscriber::fmt()
+        .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
         .with_ansi(true)
         .with_target(true)
         .with_thread_ids(true)
@@ -66,7 +67,7 @@ fn main() -> Result<()> {
     }
 
     if !args.output_dir.exists() {
-        info!("Creating output directory: {:?}", args.output_dir);
+        debug!("Creating output directory: {:?}", args.output_dir);
         fs::create_dir_all(&args.output_dir).context("Failed to create output directory")?;
     }
 
@@ -82,6 +83,7 @@ fn main() -> Result<()> {
 }
 
 fn process_image(input_path: &Path, output_dir: &Path, mask_texts: Option<&str>) -> Result<()> {
+    info!("Image processing started");
     info!("Reading input image: {:?}", input_path);
     let mut img = image::open(input_path).context("Failed to open input image")?;
 
@@ -105,9 +107,9 @@ fn process_image(input_path: &Path, output_dir: &Path, mask_texts: Option<&str>)
     let annotations = detect_text_with_api(input_path).context("Failed to detect text in image")?;
 
     if annotations.is_empty() {
-        info!("No text detected in the image");
+        debug!("No text detected in the image");
     } else {
-        info!("Detected {} text annotations", annotations.len());
+        debug!("Detected {} text annotations", annotations.len());
 
         mask_text(&mut img, &annotations, &additional_masks).context("Failed to mask text")?;
     }
