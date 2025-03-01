@@ -14,6 +14,7 @@ pub struct TextDetectionResponse {
 #[derive(Debug, Deserialize)]
 pub struct Response {
     #[serde(default)]
+    #[serde(rename = "textAnnotations")]
     pub text_annotations: Vec<TextAnnotation>,
 }
 
@@ -70,7 +71,7 @@ pub fn detect_text_with_api(image_path: &Path) -> Result<Vec<TextAnnotation>> {
                 content: base64_image,
             },
             features: vec![Feature {
-                feature_type: "DOCUMENT_TEXT_DETECTION".to_string(),
+                feature_type: "TEXT_DETECTION".to_string(),
                 max_results: 100,
             }],
         }],
