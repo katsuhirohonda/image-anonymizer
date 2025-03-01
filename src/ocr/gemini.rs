@@ -85,10 +85,13 @@ pub fn analyze_text_sensitivity(text: &str) -> Result<bool> {
         },
     };
 
+    let model =
+        std::env::var("GEMINI_MODEL").unwrap_or_else(|_| "gemini-2.0-flash-lite".to_string());
+
     let client = Client::new();
     let response = client
         .post(&format!(
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key={}",
+            "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={}",
             api_key
         ))
         .json(&request)
