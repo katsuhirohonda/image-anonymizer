@@ -58,8 +58,7 @@ struct Feature {
 }
 
 pub fn detect_text_with_api(image_path: &Path) -> Result<Vec<TextAnnotation>> {
-    let api_key = env::var("GOOGLE_CLOUD_API_KEY")
-        .context("GOOGLE_CLOUD_API_KEY environment variable not set")?;
+    let api_key = env::var("GCP_API_KEY").context("GCP_API_KEY environment variable not set")?;
 
     let image_data = std::fs::read(image_path).context("Failed to read image file")?;
     let base64_image = general_purpose::STANDARD.encode(&image_data);
