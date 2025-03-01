@@ -80,7 +80,7 @@ pub fn analyze_text_sensitivity(text: &str) -> Result<bool> {
     let client = Client::new();
     let response = client
         .post(&format!(
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={}",
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key={}",
             api_key
         ))
         .json(&request)
