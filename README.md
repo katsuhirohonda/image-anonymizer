@@ -19,7 +19,7 @@ A command-line tool to detect and mask sensitive content in images.
 ## Installation
 
 ```
-cargo install privacy-masker
+cargo install image-anonymizer
 ```
 
 ## Usage
@@ -37,7 +37,7 @@ Options:
 ## Examples
 
 ```
-# Process a single image (both text and faces)
+# Process a single image 
 image-anonymizer screenshot.png
 
 # Process an image and specify output directory
