@@ -21,6 +21,9 @@ struct Args {
 
     #[arg(short, long)]
     mask_texts: Option<String>,
+
+    #[arg(short, long)]
+    api_key: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -34,6 +37,12 @@ struct SensitiveTextsResponse {
 }
 
 fn main() -> Result<()> {
+    // Try to load .env file for environment variables (optional)
+    match dotenv::dotenv() {
+        Ok(_) => info!("Loaded environment from .env file"),
+        Err(_) => info!("No .env file found, using environment variables"),
+    }
+
     tracing_subscriber::fmt()
         .with_ansi(true)
         .with_target(true)
@@ -45,6 +54,12 @@ fn main() -> Result<()> {
         .expect("Failed to initialize logger");
 
     let args = Args::parse();
+
+    // Check if required API keys are set
+    if std::env::var("GCP_API_KEY").is_err() {
+        error!("GCP_API_KEY environment variable is not set");
+        anyhow::bail!("GCP_API_KEY environment variable is not set");
+    }
 
     if !args.input_file.exists() {
         error!("Input file does not exist: {:?}", args.input_file);

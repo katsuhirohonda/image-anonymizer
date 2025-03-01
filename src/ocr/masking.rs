@@ -2,9 +2,10 @@ use crate::ocr::detection::BoundingPoly;
 use anyhow::Result;
 use image::{DynamicImage, GenericImage, Rgba};
 use serde::{Deserialize, Serialize};
-use tracing::info;
+use tracing::{info, warn};
 
 use super::detection::TextAnnotation;
+use super::gemini::analyze_text_sensitivity;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SensitiveTextCriteria {
@@ -34,14 +35,39 @@ fn is_sensitive_text(
     _criteria: &SensitiveTextCriteria,
     additional_texts: &[String],
 ) -> bool {
+    // First check additional_texts for direct matches (this is fast and doesn't require API calls)
     if additional_texts.iter().any(|t| text.contains(t)) {
+        info!("Text matched additional mask pattern: {}", text);
         return true;
     }
 
-    // TODO: add more criteria
-    info!("Text: {}", text);
+    // Skip very short text as they're unlikely to be sensitive
+    if text.len() < 3 {
+        return false;
+    }
 
-    false
+    // Call Gemini API to analyze the text
+    match analyze_text_sensitivity(text) {
+        Ok(is_sensitive) => {
+            if is_sensitive {
+                info!("Gemini identified sensitive text: {}", text);
+                true
+            } else {
+                false
+            }
+        }
+        Err(err) => {
+            warn!(
+                "Error calling Gemini API, defaulting to non-sensitive: {}",
+                err
+            );
+            // If API fails, fall back to safety and consider it sensitive if it looks like
+            // an email, phone number, or contains numeric sequences that might be cards/IDs
+            text.contains('@')
+                || text.contains('-')
+                || (text.chars().filter(|c| c.is_numeric()).count() > 8)
+        }
+    }
 }
 
 pub fn mask_text(
@@ -55,7 +81,12 @@ pub fn mask_text(
     let mut masked_count = 0;
 
     for annotation in annotations {
-        if is_sensitive_text(&annotation.description, &criteria, additional_masks) {
+        // Using is_sensitive_text function requires async context
+        // For compatibility with existing code, we can use reqwest's blocking API in analyze_text_sensitivity
+        // Or refactor the entire codebase to use async Rust
+        let is_sensitive = is_sensitive_text(&annotation.description, &criteria, additional_masks);
+
+        if is_sensitive {
             mask_annotation(image, annotation)?;
             masked_count += 1;
         }
