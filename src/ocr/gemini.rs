@@ -7,7 +7,7 @@ use tracing::{error, info};
 #[derive(Debug, Serialize)]
 struct GeminiRequest {
     contents: Vec<Content>,
-    generationConfig: GenerationConfig,
+    generation_config: GenerationConfig,
 }
 
 #[derive(Debug, Serialize)]
@@ -24,9 +24,9 @@ struct Part {
 #[derive(Debug, Serialize)]
 struct GenerationConfig {
     temperature: f32,
-    topP: f32,
-    topK: i32,
-    maxOutputTokens: i32,
+    top_p: f32,
+    top_k: i32,
+    max_output_tokens: i32,
 }
 
 #[derive(Debug, Deserialize)]
@@ -69,11 +69,11 @@ pub fn analyze_text_sensitivity(text: &str) -> Result<bool> {
             role: "user".to_string(),
             parts: vec![Part { text: prompt }],
         }],
-        generationConfig: GenerationConfig {
+        generation_config: GenerationConfig {
             temperature: 0.0,
-            topP: 0.1,
-            topK: 1,
-            maxOutputTokens: 5,
+            top_p: 0.1,
+            top_k: 1,
+            max_output_tokens: 5,
         },
     };
 
