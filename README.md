@@ -60,16 +60,16 @@ The tool can detect and mask sensitive text such as email addresses, API keys, a
 
 The tool can automatically detect faces in images and apply a mosaic effect to protect privacy.
 
-<div style="display: flex; align-items: center;">
-  <div style="flex: 1; text-align: center;">
-    <p><strong>Before</strong></p>
-    <img src="examples/face_before.jpg" alt="Image with faces" style="max-width: 100%;">
-  </div>
-  <div style="flex: 1; text-align: center;">
-    <p><strong>After</strong></p>
-    <img src="examples/face_after.jpg" alt="Image with faces mosaiced" style="max-width: 100%;">
-  </div>
-</div>
+<table>
+  <tr>
+    <th>Before</th>
+    <th>After</th>
+  </tr>
+  <tr>
+    <td><img src="examples/face_before.jpg" width="400"></td>
+    <td><img src="examples/face_after.jpg" width="400"></td>
+  </tr>
+</table>
 
 ### Command Examples
 
