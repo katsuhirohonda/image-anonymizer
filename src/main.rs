@@ -82,6 +82,22 @@ fn main() -> Result<()> {
     Ok(())
 }
 
+/// Process an image to mask sensitive text
+///
+/// # Arguments
+///
+/// * `input_path` - The path to the input image
+/// * `output_dir` - The directory to save the output image
+/// * `mask_texts` - The texts to mask
+///
+/// # Returns
+///
+/// * `Result<()>` - The result of the image processing
+///
+/// # Errors
+///
+/// * `anyhow::Error` - If the image processing fails
+///
 fn process_image(input_path: &Path, output_dir: &Path, mask_texts: Option<&str>) -> Result<()> {
     info!("Image processing started");
     info!("Reading input image: {:?}", input_path);

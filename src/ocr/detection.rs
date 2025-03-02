@@ -62,6 +62,20 @@ struct Feature {
     max_results: i32,
 }
 
+/// Detect text in an image using the Google Cloud Vision API
+///
+/// # Arguments
+///
+/// * `image_path` - The path to the image file
+///
+/// # Returns
+///
+/// * `Result<Vec<TextAnnotation>>` - The detected text annotations
+///
+/// # Errors
+///
+/// * `anyhow::Error` - If the image processing fails
+///
 pub fn detect_text_with_api(image_path: &Path) -> Result<Vec<TextAnnotation>> {
     let api_key = env::var("GCP_API_KEY").context("GCP_API_KEY environment variable not set")?;
     debug!("image_path: {}", image_path.display());

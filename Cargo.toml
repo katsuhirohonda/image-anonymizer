@@ -1,6 +1,6 @@
 [package]
 name = "image-anonymizer"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 authors = ["Katsuhiro Honda <freewave3@gmail.com>"]
 description = "A command-line tool to detect and mask sensitive content in images"

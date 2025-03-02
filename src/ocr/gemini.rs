@@ -50,6 +50,18 @@ struct CandidatePart {
 }
 
 /// Analyzes text for sensitive information using Google Gemini API
+///
+/// # Arguments
+///
+/// * `text` - The text to analyze
+///
+/// # Returns
+///
+/// * `Result<bool>` - The result of the text analysis
+///
+/// # Errors
+///
+/// * `anyhow::Error` - If the text analysis fails
 pub fn analyze_text_sensitivity(text: &str) -> Result<bool> {
     let api_key = env::var("GCP_API_KEY").context("GCP_API_KEY environment variable not set")?;
 

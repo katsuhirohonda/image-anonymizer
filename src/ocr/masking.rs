@@ -18,6 +18,12 @@ pub struct SensitiveTextCriteria {
     pub company_names: bool,
 }
 
+/// Default criteria for sensitive text
+///
+/// # Returns
+///
+/// * `SensitiveTextCriteria` - The default criteria
+///
 impl Default for SensitiveTextCriteria {
     fn default() -> Self {
         Self {
@@ -31,6 +37,22 @@ impl Default for SensitiveTextCriteria {
     }
 }
 
+/// Check if a text is sensitive
+///
+/// # Arguments
+///
+/// * `text` - The text to check
+/// * `criteria` - The criteria for sensitive text
+/// * `additional_texts` - Additional texts to check
+///
+/// # Returns
+///
+/// * `bool` - True if the text is sensitive, false otherwise
+///
+/// # Errors
+///
+/// * `anyhow::Error` - If the text analysis fails
+///
 fn is_sensitive_text(
     text: &str,
     criteria: &SensitiveTextCriteria,
@@ -80,6 +102,21 @@ fn is_sensitive_text(
     }
 }
 
+/// Mask sensitive text in an image
+///
+/// # Arguments
+///
+/// * `image` - The image to mask
+/// * `annotations` - The annotations to mask
+/// * `additional_masks` - Additional masks to check
+///
+/// # Returns
+///
+/// * `Result<()>` - The result of the image processing
+///
+/// # Errors
+///
+/// * `anyhow::Error` - If the image processing fails
 pub fn mask_text(
     image: &mut DynamicImage,
     annotations: &[TextAnnotation],
@@ -117,6 +154,20 @@ pub fn mask_text(
     Ok(())
 }
 
+/// Mask a text annotation in an image
+///
+/// # Arguments
+///
+/// * `image` - The image to mask
+/// * `annotation` - The annotation to mask
+///
+/// # Returns
+///
+/// * `Result<()>` - The result of the image processing
+///
+/// # Errors
+///
+/// * `anyhow::Error` - If the image processing fails
 fn mask_annotation(image: &mut DynamicImage, annotation: &TextAnnotation) -> Result<()> {
     let empty_poly = BoundingPoly { vertices: vec![] };
     let vertices = &annotation
