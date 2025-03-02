@@ -15,7 +15,7 @@ A command-line tool to detect and mask sensitive content in images.
   - Personal names
   - Company or service names
 - Masks detected content with colored rectangles
-- Masks faces with black rectangles to protect privacy
+- Applies mosaic effect to faces to protect privacy
 - Outputs processed images to a specified directory
 
 ## Installation
@@ -44,7 +44,7 @@ image-anonymizer [OPTIONS] <INPUT_FILE>
 Options:
   -o, --output-dir <DIR>     Output directory for processed images [default: ./output]
   -m, --mask-texts <TEXTS>   Additional texts to mask, comma separated
-  -f, --mask-faces           Enable face detection and masking
+  -f, --mask-faces           Enable face detection and mosaic masking
   -h, --help                 Print help
   -V, --version              Print version
 ```
@@ -61,7 +61,7 @@ image-anonymizer --output-dir ./masked_images screenshot.png
 # Process an image and mask additional text
 image-anonymizer --mask-texts "secret,confidential" screenshot.png
 
-# Process an image and mask faces
+# Process an image and apply mosaic to faces
 image-anonymizer --mask-faces screenshot.png
 
 # Process an image, mask both faces and specific text
