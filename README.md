@@ -1,4 +1,4 @@
-![Image Anonymizer Header](header.svg)
+![Image Anonymizer Header](title_header.svg)
 
 A command-line tool to detect and mask sensitive content in images.
 
