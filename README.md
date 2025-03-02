@@ -57,6 +57,25 @@ image-anonymizer --output-dir ./masked_images screenshot.png
 image-anonymizer --mask-texts "secret,confidential" screenshot.png
 ```
 
+## Running Tests
+
+```bash
+# Run all tests excluding integration tests that require API keys
+cargo test
+
+# Run all tests including integration tests
+# (requires valid API keys in .env)
+cargo test -- --include-ignored
+
+# Run specific test
+cargo test test_mask_text_with_annotations
+
+# Run tests with logging
+RUST_LOG=debug cargo test
+```
+
+Note: Some tests require a valid GCP API key to be set in the environment or in a `.env` file. Tests that make API calls are marked as `#[ignore]` and can be run with the `--include-ignored` flag.
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.

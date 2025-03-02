@@ -1,0 +1,52 @@
+{
+    "responses": [
+        {
+            "textAnnotations": [
+                {
+                    "description": "ENTIRE TEXT CONTENT",
+                    "boundingPoly": {
+                        "vertices": [
+                            { "x": 0, "y": 0 },
+                            { "x": 800, "y": 0 },
+                            { "x": 800, "y": 600 },
+                            { "x": 0, "y": 600 }
+                        ]
+                    }
+                },
+                {
+                    "description": "API Key: abc123def456ghi789",
+                    "boundingPoly": {
+                        "vertices": [
+                            { "x": 10, "y": 10 },
+                            { "x": 200, "y": 10 },
+                            { "x": 200, "y": 30 },
+                            { "x": 10, "y": 30 }
+                        ]
+                    }
+                },
+                {
+                    "description": "Email: user@example.com",
+                    "boundingPoly": {
+                        "vertices": [
+                            { "x": 10, "y": 40 },
+                            { "x": 180, "y": 40 },
+                            { "x": 180, "y": 60 },
+                            { "x": 10, "y": 60 }
+                        ]
+                    }
+                },
+                {
+                    "description": "Phone: 555-123-4567",
+                    "boundingPoly": {
+                        "vertices": [
+                            { "x": 10, "y": 70 },
+                            { "x": 150, "y": 70 },
+                            { "x": 150, "y": 90 },
+                            { "x": 10, "y": 90 }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
