@@ -58,7 +58,7 @@ fn test_process_image_end_to_end() -> Result<()> {
     let output_dir = test_dir.join("output");
 
     // This is now calling the actual function from image-anonymizer
-    let result = image_anonymizer::process_image(&image_path, &output_dir, Some("test"));
+    let result = image_anonymizer::process_image(&image_path, &output_dir, Some("test"), false);
 
     // Check that processing completed successfully
     assert!(
@@ -84,7 +84,7 @@ fn test_process_image_nonexistent_input() -> Result<()> {
     let nonexistent_path = test_dir.join("nonexistent.png");
     let output_dir = test_dir.join("output");
 
-    let result = image_anonymizer::process_image(&nonexistent_path, &output_dir, None);
+    let result = image_anonymizer::process_image(&nonexistent_path, &output_dir, None, false);
 
     // Should fail because input doesn't exist
     assert!(result.is_err(), "Should fail with nonexistent input");

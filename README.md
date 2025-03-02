@@ -6,6 +6,7 @@ A command-line tool to detect and mask sensitive content in images.
 
 - Detects and masks sensitive content in images:
   - Text detection via OCR
+  - Face detection and masking
 - Identifies sensitive textual information like:
   - API keys
   - Email addresses
@@ -14,6 +15,7 @@ A command-line tool to detect and mask sensitive content in images.
   - Personal names
   - Company or service names
 - Masks detected content with colored rectangles
+- Masks faces with black rectangles to protect privacy
 - Outputs processed images to a specified directory
 
 ## Installation
@@ -33,15 +35,16 @@ GCP_API_KEY=
 GEMINI_MODEL=gemini-2.0-flash-lite
 ```
 
-Fill in your GCP API key to enable text detection capabilities.
+Fill in your GCP API key to enable text and face detection capabilities.
 
 ## Usage
 
 ```
-privacy-masker [OPTIONS] <INPUT_FILE>
+image-anonymizer [OPTIONS] <INPUT_FILE>
 Options:
   -o, --output-dir <DIR>     Output directory for processed images [default: ./output]
   -m, --mask-texts <TEXTS>   Additional texts to mask, comma separated
+  -f, --mask-faces           Enable face detection and masking
   -h, --help                 Print help
   -V, --version              Print version
 ```
@@ -51,10 +54,18 @@ Options:
 ```
 # Process a single image 
 image-anonymizer screenshot.png
+
 # Process an image and specify output directory
 image-anonymizer --output-dir ./masked_images screenshot.png
+
 # Process an image and mask additional text
 image-anonymizer --mask-texts "secret,confidential" screenshot.png
+
+# Process an image and mask faces
+image-anonymizer --mask-faces screenshot.png
+
+# Process an image, mask both faces and specific text
+image-anonymizer --mask-faces --mask-texts "confidential" screenshot.png
 ```
 
 ## Running Tests

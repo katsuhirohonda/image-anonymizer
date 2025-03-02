@@ -22,6 +22,10 @@ struct Args {
 
     #[arg(short, long)]
     api_key: Option<String>,
+    
+    #[arg(short = 'f', long, default_value = "false", 
+          help = "Enable face detection and masking")]
+    mask_faces: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -79,10 +83,15 @@ fn main() -> Result<()> {
         fs::create_dir_all(&args.output_dir).context("Failed to create output directory")?;
     }
 
+    if args.mask_faces {
+        info!("Face masking enabled");
+    }
+
     process_image(
         &args.input_file,
         &args.output_dir,
         args.mask_texts.as_deref(),
+        args.mask_faces,
     )
     .context("Failed to process image")?;
 
