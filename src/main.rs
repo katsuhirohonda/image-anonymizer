@@ -36,6 +36,16 @@ struct SensitiveTextsResponse {
     sensitive_texts: Vec<String>,
 }
 
+/// Main function
+///
+/// # Returns
+///
+/// * `Result<()>` - The result of the program
+///
+/// # Errors
+///
+/// * `anyhow::Error` - If the program fails
+///
 fn main() -> Result<()> {
     // Try to load .env file for environment variables (optional)
     match dotenv::dotenv() {
