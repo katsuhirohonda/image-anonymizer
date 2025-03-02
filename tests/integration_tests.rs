@@ -58,12 +58,41 @@ fn test_process_image_end_to_end() -> Result<()> {
     let output_dir = test_dir.join("output");
 
     // This is now calling the actual function from image-anonymizer
-    let result = image_anonymizer::process_image(&image_path, &output_dir, Some("test"));
+    let result = image_anonymizer::process_image(&image_path, &output_dir, Some("test"), false);
 
     // Check that processing completed successfully
     assert!(
         result.is_ok(),
         "Image processing failed: {:?}",
+        result.err()
+    );
+
+    // Verify output file exists
+    let expected_output = output_dir.join("masked_test_image.png");
+    assert!(expected_output.exists(), "Output file does not exist");
+
+    // Cleanup
+    teardown(&test_dir)?;
+
+    Ok(())
+}
+
+// This test can be run with cargo test -- --ignored
+// since it requires API access and can't be run in CI
+#[test]
+#[ignore]
+fn test_process_image_with_face_masking() -> Result<()> {
+    let test_dir = setup()?;
+    let image_path = test_dir.join("test_image.png");
+    let output_dir = test_dir.join("output_face");
+
+    // Process image with face masking enabled
+    let result = image_anonymizer::process_image(&image_path, &output_dir, None, true);
+
+    // Check that processing completed successfully
+    assert!(
+        result.is_ok(),
+        "Image processing with face masking failed: {:?}",
         result.err()
     );
 
@@ -84,7 +113,7 @@ fn test_process_image_nonexistent_input() -> Result<()> {
     let nonexistent_path = test_dir.join("nonexistent.png");
     let output_dir = test_dir.join("output");
 
-    let result = image_anonymizer::process_image(&nonexistent_path, &output_dir, None);
+    let result = image_anonymizer::process_image(&nonexistent_path, &output_dir, None, false);
 
     // Should fail because input doesn't exist
     assert!(result.is_err(), "Should fail with nonexistent input");
