@@ -63,11 +63,11 @@ The tool can automatically detect faces in images and apply a mosaic effect to p
 <div style="display: flex; align-items: center;">
   <div style="flex: 1; text-align: center;">
     <p><strong>Before</strong></p>
-    <img src="examples/face_before.png" alt="Image with faces" style="max-width: 100%;">
+    <img src="examples/face_before.jpg" alt="Image with faces" style="max-width: 100%;">
   </div>
   <div style="flex: 1; text-align: center;">
     <p><strong>After</strong></p>
-    <img src="examples/face_after.png" alt="Image with faces mosaiced" style="max-width: 100%;">
+    <img src="examples/face_after.jpg" alt="Image with faces mosaiced" style="max-width: 100%;">
   </div>
 </div>
 
