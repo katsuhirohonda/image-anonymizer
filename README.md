@@ -30,7 +30,7 @@ The application requires API keys to access Google Cloud Platform services. Crea
 
 ```
 # You need to set these environment variables
-# GCP API Key for Google Cloud Platform need to access "Gemini for Google Cloud" API and "Cloud Vision API"
+# GCP API Key for Google Cloud Platform need to access "Gemini for Google Cloud API", "Generative Language API" and "Cloud Vision API"
 GCP_API_KEY=
 GEMINI_MODEL=gemini-2.0-flash-lite
 ```
