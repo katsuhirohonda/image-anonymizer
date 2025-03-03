@@ -1,11 +1,11 @@
 [package]
 name = "image-anonymizer"
-version = "0.2.5"
+version = "0.2.6"
 edition = "2024"
 authors = ["Katsuhiro Honda <freewave3@gmail.com>"]
 description = "A command-line tool to detect and mask sensitive content in images"
 license = "MIT"
-repository = "https://github.com/e-bebe/image-anonymizer"
+repository = "https://github.com/katsuhirohonda/image-anonymizer"
 readme = "README.md"
 keywords = ["image", "text", "masking", "privacy", "ocr"]
 categories = ["command-line-utilities"]
