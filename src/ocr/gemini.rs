@@ -71,7 +71,7 @@ pub fn analyze_text_sensitivity(text: &str) -> Result<bool> {
         "Analyze the following text and determine if it contains ACTUAL sensitive information rather than just labels or UI elements. \
         Respond with only 'true' if it contains real sensitive information, or 'false' if it doesn't.\n\n\
         Examples of what IS sensitive:\n\
-        - Actual API keys like 'AIzaSyB3X7gtreHx9FGpA_Y3xUzT3gBELEhH7iM'\n\
+        - Actual API keys like 'AIzaSyB3X7gtreHx9FGpA_XXXXXXXXXXXXX'\n\
         - Real email addresses like 'john.doe@example.com'\n\
         - Actual phone numbers like '+1-555-123-4567'\n\
         - Real credit card numbers, personal names, addresses, etc.\n\n\
